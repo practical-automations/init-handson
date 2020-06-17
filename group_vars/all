@@ -1,0 +1,8 @@
+infra_tower_groups:
+  - name: server team
+    desc: server team
+  - name: network team
+    desc: network team
+  - name: app team
+    desc: app team
+

@@ -1,0 +1,13 @@
+localhost ansible_connection=local
+
+[infra]
+console 
+gitlab
+gitlab-runner
+awx_web
+awx_task
+awx_redis
+awx_postgres
+
+[infra:vars]
+ansible_connection=docker
