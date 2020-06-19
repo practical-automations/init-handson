@@ -1,0 +1,10 @@
+ServerAliveInterval 60
+StrictHostKeyChecking no
+
+Host prod-*
+  User centos
+  IdentityFile ~/.ssh/id_rsa_prod
+
+Host test-*
+  User centos
+  IdentityFile ~/.ssh/id_rsa_test

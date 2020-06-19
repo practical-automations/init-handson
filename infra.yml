@@ -77,6 +77,10 @@
       - src: id_rsa_prod
         dest: /jupyter/.ssh/id_rsa_prod
         mode: '0700'
+      - src: config
+        dest: /jupyter/.ssh/config
+        mode: '0600'
+
 
 #  - name: Create organizations
 #    tower_organization:

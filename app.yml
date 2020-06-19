@@ -13,6 +13,7 @@
       loop:
         - getty@tty1.service
         - serial-getty@ttyS0.service
+        - kdump.service
 
     - group:
         name: centos
