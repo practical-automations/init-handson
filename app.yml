@@ -1,6 +1,5 @@
-- hosts: test-prod
-  gather_facts: true
-
+- hosts: prod_test
+  gather_facts: false
   tasks:
     - systemd:
         name: sshd
@@ -23,3 +22,36 @@
         name: centos
         groups: centos,wheel
         state: present
+
+    - lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^centos\s'
+        line: 'centos ALL=(ALL) NOPASSWD: ALL'
+
+    - file:
+        path: /home/centos/.ssh
+        state: directory
+        mode: 0700
+        owner: centos
+        group: centos
+
+- hosts: prod
+  gather_facts: false
+  tasks:
+    - copy:
+        src: id_rsa_prod.pub
+        dest: /home/centos/.ssh/authorized_keys
+        mode: 0644
+        owner: centos
+        group: centos
+
+- hosts: test
+  gather_facts: false
+  tasks:
+    - copy:
+        src: id_rsa_test.pub
+        dest: /home/centos/.ssh/authorized_keys
+        mode: 0644
+        owner: centos
+        group: centos

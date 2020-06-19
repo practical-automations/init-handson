@@ -9,18 +9,27 @@ awx_task
 awx_redis
 awx_postgres
 
-[infra:vars]
-ansible_connection=docker
-
-[test-prod]
+[prod]
 prod-lb
 prod-web1
 prod-web2
 prod-db
+
+[test]
 test-lb
 test-web1
 test-web2
 test-db
 
-[test-prod:vars]
+[prod_test]
+prod
+test
+
+[infra:vars]
+ansible_connection=docker
+
+[prod:vars]
+ansible_connection=docker
+
+[test:vars]
 ansible_connection=docker
