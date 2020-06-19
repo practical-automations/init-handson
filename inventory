@@ -21,7 +21,7 @@ test-web1
 test-web2
 test-db
 
-[prod_test]
+[prod_test:children]
 prod
 test
 
