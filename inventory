@@ -11,3 +11,16 @@ awx_postgres
 
 [infra:vars]
 ansible_connection=docker
+
+[test-prod]
+prod-lb
+prod-web1
+prod-web2
+prod-db
+test-lb
+test-web1
+test-web2
+test-db
+
+[test-prod:vars]
+ansible_connection=docker

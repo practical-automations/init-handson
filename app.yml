@@ -1,0 +1,25 @@
+- hosts: test-prod
+  gather_facts: true
+
+  tasks:
+    - systemd:
+        name: sshd
+        state: started
+        enabled: true
+
+    - systemd:
+        name: "{{ item }}"
+        state: stopped
+        masked: yes
+      loop:
+        - getty@tty1.service
+        - serial-getty@ttyS0.service
+
+    - group:
+        name: centos
+        state: present
+
+    - user:
+        name: centos
+        groups: centos,wheel
+        state: present
