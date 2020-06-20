@@ -1,0 +1,37 @@
+- hosts: localhost
+  gather_facts: false
+
+  tasks:
+
+  - name: (jupyter) create ssh dirs
+    file:
+      path: /jupyter/.ssh
+      state: directory
+      mode: '0700'
+      owner: jupyter
+      group: jupyter
+
+  - name: (jupyter) put ssh key files
+    copy:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      mode: "{{ item.mode }}"
+      owner: jupyter
+      group: jupyter
+    loop:
+      - src: id_rsa_test.pub
+        dest: /jupyter/.ssh/id_rsa_test.pub
+        mode: '0644'
+      - src: id_rsa_prod.pub
+        dest: /jupyter/.ssh/id_rsa_prod.pub
+        mode: '0644'
+      - src: id_rsa_test
+        dest: /jupyter/.ssh/id_rsa_test
+        mode: '0700'
+      - src: id_rsa_prod
+        dest: /jupyter/.ssh/id_rsa_prod
+        mode: '0700'
+      - src: config
+        dest: /jupyter/.ssh/config
+        mode: '0600'
+

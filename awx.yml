@@ -1,0 +1,13 @@
+- hosts: localhost
+  gather_facts: false
+  collections:
+    - awx.awx
+
+  tasks:
+
+#  - name: Create organizations
+#    tower_organization:
+#      name: "{{ item.name }}"
+#      description: "{{ item.desc }}"
+#      state: present
+#    loop: "{{ infra_tower_groups }}"

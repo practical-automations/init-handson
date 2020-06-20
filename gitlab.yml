@@ -1,7 +1,5 @@
 - hosts: localhost
   gather_facts: false
-  collections:
-    - awx.awx
 
   tasks:
   - name: (gitlab) set personal token
@@ -49,38 +47,6 @@
              --docker-network-mode bootstrap_infraci_nw
     when:
       - configured_runners.stderr.find('\npai-gitlab-runner-molecule') == -1
-
-  - name: (jupyter) create ssh dirs
-    file:
-      path: /jupyter/.ssh
-      state: directory
-      mode: '0700'
-      owner: jupyter
-      group: jupyter
-
-  - name: (jupyter) put ssh key files
-    copy:
-      src: "{{ item.src }}"
-      dest: "{{ item.dest }}"
-      mode: "{{ item.mode }}"
-      owner: jupyter
-      group: jupyter
-    loop:
-      - src: id_rsa_test.pub
-        dest: /jupyter/.ssh/id_rsa_test.pub
-        mode: '0644'
-      - src: id_rsa_prod.pub
-        dest: /jupyter/.ssh/id_rsa_prod.pub
-        mode: '0644'
-      - src: id_rsa_test
-        dest: /jupyter/.ssh/id_rsa_test
-        mode: '0700'
-      - src: id_rsa_prod
-        dest: /jupyter/.ssh/id_rsa_prod
-        mode: '0700'
-      - src: config
-        dest: /jupyter/.ssh/config
-        mode: '0600'
 
   - name: (gitlab) group automation already exist?
     shell: gitlab group list --search automation | grep automation
@@ -158,11 +124,3 @@
       gitlab group-member create --group-id ${GROUP_ID:?} --user-id ${USER_ID:?} --access-level 30
     when:
       - belong_user_developer.rc != 0
-
-
-#  - name: Create organizations
-#    tower_organization:
-#      name: "{{ item.name }}"
-#      description: "{{ item.desc }}"
-#      state: present
-#    loop: "{{ infra_tower_groups }}"

@@ -1,2 +1,4 @@
-- import_playbook: infra.yml
-- import_playbook: app.yml
+- import_playbook: jupyter.yml
+- import_playbook: gitlab.yml
+- import_playbook: awx.yml
+- import_playbook: app-nodes.yml
