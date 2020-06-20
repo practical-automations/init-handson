@@ -42,6 +42,7 @@
              --executor docker \
              --locked=false \
              --docker-image irixjp/pai-molecule:latest \
+             --docker-helper-image irixjp/pai-gitlab-runner-helper:x86_64-6214287e \
              --clone-url http://gitlab/ \
              --docker-volumes /var/run/docker.sock:/var/run/docker.sock \
              --docker-privileged=true \
@@ -80,6 +81,83 @@
       - src: config
         dest: /jupyter/.ssh/config
         mode: '0600'
+
+  - name: (gitlab) group automation already exist?
+    shell: gitlab group list --search automation | grep automation
+    register: created_user_automation
+    ignore_errors: True
+    changed_when: False
+
+  - name: (gitlab) add automation group
+    shell: gitlab group create --name automation --path automation --visibility public
+    when:
+      - created_user_automation.rc != 0
+
+  - name: (gitlab) user reviewer already exist?
+    shell: gitlab user list --search reviewer | grep username
+    register: created_user_reviewer
+    ignore_errors: True
+    changed_when: False
+
+  - name: (gitlab) add reviewer user
+    shell: >-
+      gitlab user create
+      --username reviewer
+      --name reviewer
+      --password reviewer
+      --email reviewer@localhost
+      --skip-confirmation true
+    when:
+      - created_user_reviewer.rc != 0
+
+  - name: (gitlab) user developer already exist?
+    shell: gitlab user list --search developer | grep username
+    register: created_user_developer
+    ignore_errors: True
+    changed_when: False
+
+  - name: (gitlab) add developer user
+    shell: >-
+      gitlab user create
+      --username developer
+      --name developer
+      --password developer
+      --email developer@localhost
+      --skip-confirmation true
+    when:
+      - created_user_developer.rc != 0
+
+  - name: (gitlab) user reviewer already belong to group automation?
+    shell: |
+      GROUP_ID=$(gitlab group list --search automation | yq .id)
+      gitlab -o yaml group-member list --group-id ${GROUP_ID:?} | yq -r '.[] | select(.username == "reviewer") | .username' | grep reviewer
+    register: belong_user_reviewer
+    ignore_errors: True
+    changed_when: False
+
+  - name: (gitlab) user reviewer add to group automation
+    shell: |
+      USER_ID=$(gitlab user list --username reviewer | yq .id)
+      GROUP_ID=$(gitlab group list --search automation | yq .id)
+      gitlab group-member create --group-id ${GROUP_ID:?} --user-id ${USER_ID:?} --access-level 40
+    when:
+      - belong_user_reviewer.rc != 0
+
+  - name: (gitlab) user developer already belong to group automation?
+    shell: |
+      GROUP_ID=$(gitlab group list --search automation | yq .id)
+      gitlab -o yaml group-member list --group-id ${GROUP_ID:?} | yq -r '.[] | select(.username == "developer") | .username' | grep developer
+    register: belong_user_developer
+    ignore_errors: True
+    changed_when: False
+
+  - name: (gitlab) user developer add to group automation
+    shell: |
+      USER_ID=$(gitlab user list --username developer | yq .id)
+      GROUP_ID=$(gitlab group list --search automation | yq .id)
+      gitlab group-member create --group-id ${GROUP_ID:?} --user-id ${USER_ID:?} --access-level 30
+    when:
+      - belong_user_developer.rc != 0
 
 
 #  - name: Create organizations
