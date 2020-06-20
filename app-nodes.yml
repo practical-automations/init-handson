@@ -1,4 +1,5 @@
-- hosts: prod_test
+- name: configure app nodes
+  hosts: prod_test
   gather_facts: false
   tasks:
     - systemd:

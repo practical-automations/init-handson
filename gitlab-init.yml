@@ -1,4 +1,5 @@
-- hosts: localhost
+- name: configure gitlab users/groups
+  hosts: localhost
   gather_facts: false
 
   tasks:

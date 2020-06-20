@@ -1,4 +1,5 @@
 - import_playbook: jupyter.yml
-- import_playbook: gitlab.yml
-- import_playbook: awx.yml
 - import_playbook: app-nodes.yml
+- import_playbook: gitlab-init.yml
+- import_playbook: gitlab-projects.yml
+- import_playbook: awx.yml

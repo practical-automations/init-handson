@@ -1,4 +1,5 @@
-- hosts: localhost
+- name: configure jupyter
+  hosts: localhost
   gather_facts: false
 
   tasks:

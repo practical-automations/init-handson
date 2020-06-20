@@ -1,0 +1,70 @@
+- name: configure gitlab projects
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: (projrct) project {{ repo_name }} is exist?
+      shell: gitlab -o yaml project list | yq -r '.[] | select(.name == "{{ repo_name }}") | .name'
+      register: result
+      ignore_errors: True
+      changed_when: False
+      vars:
+        repo_name: role-app-init
+
+    - name: (project) create project {{ repo_name }}
+      shell: |
+        NAMESPACE_ID=$(gitlab -o yaml namespace list | yq '.[] | select(.kind == "group" and .name == "automation") | .id')
+        gitlab project create \
+        --name {{ repo_name }} \
+        --path {{ repo_name }} \
+        --namespace-id ${NAMESPACE_ID:?} \
+        --visibility public \
+        --import-url https://github.com/practical-automations/{{ repo_name }}.git
+      when:
+        - result.stdout.find(repo_name) == -1
+      vars:
+        repo_name: role-app-init
+
+    - name: (projrct) project {{ repo_name }} is exist?
+      shell: gitlab -o yaml project list | yq -r '.[] | select(.name == "{{ repo_name }}") | .name'
+      register: result
+      ignore_errors: True
+      changed_when: False
+      vars:
+        repo_name: role-lb-init
+
+    - name: (project) create project {{ repo_name }}
+      shell: |
+        NAMESPACE_ID=$(gitlab -o yaml namespace list | yq '.[] | select(.kind == "group" and .name == "automation") | .id')
+        gitlab project create \
+        --name {{ repo_name }} \
+        --path {{ repo_name }} \
+        --namespace-id ${NAMESPACE_ID:?} \
+        --visibility public \
+        --import-url https://github.com/practical-automations/{{ repo_name }}.git
+      when:
+        - result.stdout.find(repo_name) == -1
+      vars:
+        repo_name: role-lb-init
+
+    - name: (projrct) project {{ repo_name }} is exist?
+      shell: gitlab -o yaml project list | yq -r '.[] | select(.name == "{{ repo_name }}") | .name'
+      register: result
+      ignore_errors: True
+      changed_when: False
+      vars:
+        repo_name: role-db-init
+
+    - name: (project) create project {{ repo_name }}
+      shell: |
+        NAMESPACE_ID=$(gitlab -o yaml namespace list | yq '.[] | select(.kind == "group" and .name == "automation") | .id')
+        gitlab project create \
+        --name {{ repo_name }} \
+        --path {{ repo_name }} \
+        --namespace-id ${NAMESPACE_ID:?} \
+        --visibility public \
+        --import-url https://github.com/practical-automations/{{ repo_name }}.git
+      when:
+        - result.stdout.find(repo_name) == -1
+      vars:
+        repo_name: role-db-init
